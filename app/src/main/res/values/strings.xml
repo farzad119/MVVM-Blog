@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Blog MVVM</string>
+    <string name="title_activity_posts">Posts</string>
+</resources>
