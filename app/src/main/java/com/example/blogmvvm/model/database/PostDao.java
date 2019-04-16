@@ -22,4 +22,7 @@ public interface PostDao {
 
     @Query("SELECT * FROM post_table")
     LiveData<List<Post>> getAllPosts();
+
+    @Query("SELECT * FROM post_table WHERE id =:postId")
+    Post getPost(int postId);
 }

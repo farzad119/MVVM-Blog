@@ -10,31 +10,33 @@ import java.util.List;
 
 public class Repository {
     PostDao postDao;
-    NoteDao noteDao;
 
-    public Repository(Context context){
+    public Repository(Context context) {
         MyDatabase myDatabase = MyDatabase.getInsttance(context);
         postDao = myDatabase.postDao();
-        noteDao = myDatabase.noteDao();
     }
 
-    public void insertPost(Post post){
+    public void insertPost(Post post) {
         postDao.insertPost(post);
     }
 
-    public void updatePost(Post post){
+    public void updatePost(Post post) {
         postDao.updatePost(post);
     }
 
-    public void deletePost(Post post){
+    public void deletePost(Post post) {
         postDao.deletePost(post);
     }
 
-    public void deleteAllPosts(){
+    public void deleteAllPosts() {
         postDao.deleteAllPosts();
     }
 
-    public LiveData<List<Post>> getPosts(){
+    public LiveData<List<Post>> getPosts() {
         return postDao.getAllPosts();
+    }
+
+    public Post getPost(int postId) {
+        return postDao.getPost(postId);
     }
 }

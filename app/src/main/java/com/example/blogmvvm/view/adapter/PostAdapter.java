@@ -1,99 +1,82 @@
-package com.example.ali.androidmvvm.ui.activity.main;
+package com.example.blogmvvm.view.adapter;
 
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.example.ali.androidmvp.R;
-import com.example.ali.androidmvvm.data.network.model.Movie;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import com.example.blogmvvm.R;
+import com.example.blogmvvm.model.database.Post;
+import com.example.blogmvvm.view.activity.DetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
-/**
- * Created by Ali Esa Assadi on 24/03/2018.
- */
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
-    public interface OnMovieAdapter{
-        void onMovieClicked(Movie movie);
+    private List<Post> posts;
+    private Context context;
+
+    public PostAdapter(Context context) {
+        posts = new ArrayList<>();
+        this.context = context;
     }
 
-    private List<Movie> mItems;
-    private OnMovieAdapter mListener;
-
-    public MovieAdapter(OnMovieAdapter listener) {
-        mListener = listener;
-        mItems = new ArrayList<>();
-    }
-
-    public void setItems(List<Movie> items) {
-        mItems = items;
+    public void setItems(List<Post> posts) {
+        this.posts = posts;
         notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Movie movie = getItem(position);
+        Post post = getItem(position);
 
-        holder.setOnClickListener(movie);
-        holder.setTitle(movie.getTitle());
-        holder.setImage(movie.getImage());
-        holder.setDescription(movie.getDescription());
+        holder.tvTitle.setText(post.getTitle());
+        holder.tvAuthor.setText(post.getAuthor());
+        holder.tvContent.setText(post.getContent());
+
+        holder.lnBase.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra("POST_ID", post.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return posts.size();
     }
 
-    private Movie getItem(int position) {
-        return mItems.get(position);
+    private Post getItem(int position) {
+        return posts.get(position);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.image) AppCompatImageView image;
-        @BindView(R.id.title) TextView title;
-        @BindView(R.id.desc) TextView desc;
+        @BindView(R.id.tv_title)
+        TextView tvTitle;
+        @BindView(R.id.tv_author)
+        TextView tvAuthor;
+        @BindView(R.id.tv_content)
+        TextView tvContent;
+        @BindView(R.id.ln_base)
+        LinearLayout lnBase;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-        }
-
-        public void setTitle(String title) {
-            this.title.setText(title);
-        }
-
-        public void setImage(String imageUrl) {
-            Glide.with(itemView.getContext()).load(imageUrl).into(image);
-        }
-
-        private void setDescription(String description) {
-            desc.setText(description);
-        }
-
-        private void setOnClickListener(Movie movie) {
-            itemView.setTag(movie);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            mListener.onMovieClicked((Movie) view.getTag());
         }
     }
 }
